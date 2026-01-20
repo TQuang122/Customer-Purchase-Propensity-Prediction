@@ -1,0 +1,5 @@
+outs:
+- md5: 77b712b67cd018530ecb27ac213959d6
+  size: 124706319
+  hash: md5
+  path: processed_purchase_propensity_data_v2.parquet

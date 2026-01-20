@@ -14,5 +14,6 @@ dependencies = [
     "pip>=25.3",
     "pyarrow>=22.0.0",
     "pyspark>=4.1.1",
+    "scikit-learn>=1.8.0",
     "seaborn>=0.13.2",
 ]
