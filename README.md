@@ -13,7 +13,7 @@ A **production-ready MLOps system** for customer cart-to-purchase conversion pre
 - [Overview](#overview)
 - [Data Source](#data-source)
 - [Architecture](#architecture)
-- [Features](#features)
+<!-- - [Features](#features)
 - [Project Structure](#project-structure)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
@@ -21,7 +21,7 @@ A **production-ready MLOps system** for customer cart-to-purchase conversion pre
 - [Infrastructure](#infrastructure)
 - [Monitoring & Observability](#monitoring--observability)
 - [Development](#development)
-- [References](#references)
+- [References](#references) -->
 
 ---
 
