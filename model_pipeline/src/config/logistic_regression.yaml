@@ -27,7 +27,7 @@ model:
     random_state: 42
     solver: "lbfgs"  # lbfgs, liblinear, newton-cg, newton-cholesky, sag, saga
     max_iter: 1000
-    multi_class: "auto"  # auto, ovr, multinomial
+    # multi_class: "auto"  # auto, ovr, multinomial
     verbose: 1
     warm_start: false
     n_jobs: -1
