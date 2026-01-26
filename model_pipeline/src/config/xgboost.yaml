@@ -1,8 +1,8 @@
 mlflow:
-  tracking_uri: "http://localhost:5000"
+  tracking_uri: "http://mlflow_server:5000"
   experiment_name: "test_cart_to_purchase_prediction_xgboost_v1.1"
   artifact_location: "s3://mlflow/"
-  registry_uri: "http://localhost:5000"
+  registry_uri: "http://mlflow_server:5000"
   tags:
     task: "cart-to-purchase"
     purpose: "test"

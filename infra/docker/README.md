@@ -145,7 +145,7 @@ Components:
 - **Airflow Worker** - Executes tasks (Celery executor)
 - **Airflow API Server** (Port 8081) - Execution API
 - **PostgreSQL** (Port 5432) - Airflow metadata database
-- **Redis** (Port 6379) - Celery message broker
+- **Redis** (Port 6379) - Celery message brokerj
 
 **Features:**
 - CeleryExecutor for distributed task execution

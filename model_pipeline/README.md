@@ -105,7 +105,7 @@ mlflow:
     purpose: "test"
 
 model:
-  name: "xgboost_churn"
+  name: "xgboost_ctp"
   version: "0.1.0"
   type: "classifier"
   train_test_split: 0.2
@@ -131,11 +131,11 @@ evaluation:
     auc: 0.80
 
 features:
-  target_column: "Churn"
+  target_column: "is_purchased"
   training_features:
-    - Age
-    - Tenure
-    - Usage Frequency
+    - Price
+    - Brand
+    - Category_code_level1
     # ... more features
 ```
 
@@ -269,8 +269,8 @@ predictions = model.predict(test_data)
    ```bash
    # Always compare against current champion
    python src/scripts/eval.py \
-       --model-uri "models:/xgboost_churn_model@staging" \
-       --compare-baseline "models:/xgboost_churn_model@champion"
+       --model-uri "models:/xgboost_ctp_model@staging" \
+       --compare-baseline "models:/xgboost_ctp_model@champion"
    
    # If improvement confirmed, promote
    ./promote_model.sh

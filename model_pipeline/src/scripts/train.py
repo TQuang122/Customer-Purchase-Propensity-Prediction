@@ -1,6 +1,7 @@
 """
 Docstring for model_pipeline.src.scripts.train
 """
+
 from pathlib import Path
 import argparse
 import pandas as pd
@@ -21,9 +22,10 @@ import os
 os.environ["AWS_ACCESS_KEY_ID"] = "minio"
 os.environ["AWS_SECRET_ACCESS_KEY"] = "minio123"
 os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
-os.environ["MLFLOW_S3_ENDPOINT_URL"] = "http://localhost:9000"
-
-
+os.environ["MLFLOW_S3_ENDPOINT_URL"] = os.environ.get(
+    "MLFLOW_S3_ENDPOINT_URL",
+    "http://minio:9000",
+)
 
 
 def main():
@@ -53,7 +55,7 @@ def main():
         default=None,
         help="MLflow run name",
     )
-  
+
     args = parser.parse_args()
 
     logger.info("Loading configuration...")
@@ -62,7 +64,7 @@ def main():
     if args.experiment_name:
         config["mlflow"]["experiment_name"] = args.experiment_name
     logger.info(f"Experiment name: {args.experiment_name}")
-    
+
     logger.info("Initializing MLflow experiment tracker...")
     tracker = ExperimentTracker(
         tracking_uri=config["mlflow"]["tracking_uri"],
@@ -73,9 +75,9 @@ def main():
     logger.info(f"Loading training data from {args.training_data_path=}")
     data_path = Path(args.training_data_path)
 
-    if data_path.suffix.lower() == '.csv':
+    if data_path.suffix.lower() == ".csv":
         data = pd.read_csv(data_path)
-    elif data_path.suffix.lower() in ['.parquet', '.pq']:
+    elif data_path.suffix.lower() in [".parquet", ".pq"]:
         data = pd.read_parquet(data_path)
     else:
         supported_formats = [".csv", ".parquet", ".pq"]
@@ -91,24 +93,23 @@ def main():
     target_col = config["features"]["target_column"]
     feature_cols = config["features"]["training_features"]
 
-    cols_to_encode = data.select_dtypes(include=['object', 'category']).columns.tolist()
+    cols_to_encode = data.select_dtypes(include=["object", "category"]).columns.tolist()
     for col in cols_to_encode:
         logger.info(f"Encoding column: {col}")
         le = LabelEncoder()
         data[col] = le.fit_transform(data[col].astype(str))
         encoders[col] = le
-    
+
     target_encoder = encoders.pop(target_col, None)
     feature_encoders = encoders
 
-    
     trainer = GenericBinaryClassifierTrainer(
         config=config["model"],
         experiment_tracker=tracker,
-        model_type=config['model']['model_type']
+        model_type=config["model"]["model_type"],
     )
 
-    tags: dict= config["mlflow"]["tags"]
+    tags: dict = config["mlflow"]["tags"]
     with tracker.start_run(
         run_name=args.run_name,
         tags=tags,
@@ -116,7 +117,7 @@ def main():
         logger.info(f"Started MLflow run: {run.info.run_id}")
         target_col = config["features"]["target_column"]
         feature_cols = config["features"]["training_features"]
-        
+
         dtrain, dval, y_train, y_val = trainer.prepare_data(
             data=data,
             target_col=target_col,
@@ -133,21 +134,19 @@ def main():
             y_test=y_val,
             params=config["model"]["parameters"],
         )
-        
 
         trainer.save_model(
-            model_name=config['model']['name'],
+            model_name=config["model"]["name"],
             input_example=raw_data[feature_cols].head(5),
             label_encoder=target_encoder,
-            feature_encoders=feature_encoders
+            feature_encoders=feature_encoders,
         )
-        
-        
+
         logger.info("=" * 60)
         logger.info("TRAINING COMPLETE")
         logger.info(f"Run ID: {run.info.run_id}")
         logger.info(f"Run Name: {args.run_name or 'N/A'}")
-        
+
 
 if __name__ == "__main__":
     main()

@@ -207,3 +207,10 @@ def main():
 
 if __name__ == "__main__":
     exit(main())
+
+
+# python split_train_test.py \
+#   --input "../propensity_feature_store/propensity_features/feature_repo/data/processed_purchase_propensity_data_v2.parquet" \
+#   --output-dir "../propensity_feature_store/propensity_features/feature_repo/data" \
+#   --test-size 0.2 \
+#   --random-state 42

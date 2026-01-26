@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
 from loguru import logger
 
 from src.mlflow_utils.experiment_tracker import ExperimentTracker
@@ -73,6 +74,7 @@ class GenericBinaryClassifierTrainer:
         "random_forest": RandomForestClassifier,
         "decision_tree": DecisionTreeClassifier,
         "logistic_regression": LogisticRegression,
+        "xgboost": XGBClassifier,
     }
 
     # Parameters to filter out (deprecated, removed, or conditionally invalid)
@@ -84,6 +86,7 @@ class GenericBinaryClassifierTrainer:
         ],
         "random_forest": [],
         "decision_tree": [],
+        "xgboost": ["use_label_encoder"],  # Deprecated in xgboost >= 1.6
     }
 
     def __init__(
