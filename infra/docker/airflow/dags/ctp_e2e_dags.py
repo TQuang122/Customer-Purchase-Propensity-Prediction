@@ -14,9 +14,12 @@ import subprocess
 from pathlib import Path
 
 from airflow import DAG
-from airflow.operators.bash import BashOperator
-from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import BranchPythonOperator, PythonOperator
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.empty import EmptyOperator
+from airflow.providers.standard.operators.python import (
+    BranchPythonOperator,
+    PythonOperator,
+)
 
 
 REPO_ROOT = "/opt/airflow"
@@ -160,12 +163,15 @@ with DAG(
     train_model = BashOperator(
         task_id="train_xgboost",
         bash_command=(
+            "set -euo pipefail && "
             f"mkdir -p {MODEL_PIPELINE_DIR}/logs && "
+            f"LOG_TMP=/tmp/train_run_{{{{ ds_nodash }}}}.log && "
             f"python {MODEL_SCRIPTS_DIR}/train.py "
             f"--config {MODEL_CONFIG} "
             f"--training-data-path {TRAIN_DATA} "
             f"--run-name xgboost_airflow_{{{{ ds_nodash }}}} "
-            f"> {MODEL_PIPELINE_DIR}/logs/train_run.log"
+            '2>&1 | tee "$LOG_TMP" && '
+            f'cp "$LOG_TMP" {MODEL_PIPELINE_DIR}/logs/train_run.log'
         ),
         env=DEFAULT_ENV,
     )
